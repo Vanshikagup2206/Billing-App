@@ -15,4 +15,5 @@
     <string name="name">Name</string>
     <string name="update">Update</string>
     <string name="are_you_sure_you_want_to_delete_this_list">Are you sure you want to delete this list?</string>
+    <string name="select_item">Select Item</string>
 </resources>
