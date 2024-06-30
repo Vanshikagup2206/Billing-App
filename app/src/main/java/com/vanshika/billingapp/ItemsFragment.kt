@@ -104,6 +104,8 @@ class ItemsFragment : Fragment() {
                 itemArray.removeAt(i)
                 adapter.notifyDataSetChanged()
             }
+            alertDialog.setNegativeButton(resources.getString(R.string.no)){ _,_ ->
+            }
             return@setOnItemLongClickListener true
         }
     }

@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import com.vanshika.billingapp.databinding.FragmentBillsBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,12 +22,18 @@ class BillsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    var binding : FragmentBillsBinding ?= null
+    var mainActivity : MainActivity ?= null
+    lateinit var arrayAdapter : ArrayAdapter<DataAdapterClass>
+    var array = arrayListOf<DataAdapterClass>()
+    var number = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+            mainActivity = activity as MainActivity
         }
     }
 
@@ -34,7 +42,38 @@ class BillsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bills, container, false)
+        binding = FragmentBillsBinding.inflate(inflater)
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_expandable_list_item_1,array)
+        binding?.spinner?.adapter = arrayAdapter
+//        binding?.tvItems?.setText(mainActivity?.binding?.toString())
+//        binding?.tvQuantity?.setText(mainActivity?.binding?.lvItems?.toString())
+        fun numberIncrement(){
+            number++
+            binding?.tvQuantity?.setText(number.toString())
+        }
+        fun numberDecrement(){
+            number--
+            binding?.tvQuantity?.setText(number.toString())
+        }
+        binding?.btnPlus?.setOnClickListener {
+            if (binding?.tvQuantity?.text?.toString()?.trim()!! >= mainActivity?.binding?.lvItems?.toString().toString()){
+                binding?.tvQuantity?.error = resources.getString(R.string.out_of_limit)
+            }else{
+                numberIncrement()
+            }
+        }
+        binding?.btnMinus?.setOnClickListener {
+            if (binding?.tvQuantity?.text?.toString()?.trim()!! <= "0"){
+                binding?.tvQuantity?.error = resources.getString(R.string.out_of_limit)
+            }else{
+                numberDecrement()
+            }
+        }
     }
 
     companion object {
