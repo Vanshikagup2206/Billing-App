@@ -20,5 +20,8 @@
     <string name="out_of_limit">Out of limit</string>
     <string name="delete">Delete</string>
     <string name="yes">Yes</string>
+    <string name="select_an_item">Select an item</string>
+    <string name="order_placed">Order Placed</string>
+    <string name="select_the_quantity">Select the quantity</string>
     <string-array name="itemsString"></string-array>
 </resources>

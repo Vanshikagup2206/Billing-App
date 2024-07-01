@@ -1,11 +1,14 @@
 package com.vanshika.billingapp
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.vanshika.billingapp.databinding.FragmentBillsBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -51,12 +54,11 @@ class BillsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_expandable_list_item_1,mainActivity?.itemArray?: arrayListOf())
         binding?.spinner?.adapter = arrayAdapter
-//        binding?.spinner?.setOnItemClickListener { adapterView, view, i, l ->
-//            binding?.tvItems?.setText(item)
-//        }
+        var selectedItem = binding?.spinner?.selectedItem?.toString()
+        binding?.tvItems?.setText(selectedItem)
         binding?.btnPlus?.setOnClickListener {
             if (binding?.tvQuantity?.text?.toString()?.trim()!! > (mainActivity?.itemArray?: arrayListOf()).toString()){
-                binding?.tvQuantity?.error = resources.getString(R.string.out_of_limit)
+                Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
                 number++
                 binding?.tvQuantity?.setText(number.toString())
@@ -64,10 +66,19 @@ class BillsFragment : Fragment() {
         }
         binding?.btnMinus?.setOnClickListener {
             if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! <= 1){
-                binding?.tvQuantity?.error = resources.getString(R.string.out_of_limit)
+                Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
                 number--
                 binding?.tvQuantity?.setText(number.toString())
+            }
+        }
+        binding?.btnOrder?.setOnClickListener {
+            if (binding?.tvItems?.text?.toString()?.isEmpty() == true){
+                Toast.makeText(requireContext(), resources.getString(R.string.select_an_item), Toast.LENGTH_SHORT).show()
+            }else if (binding?.tvQuantity?.text?.toString()?.isEmpty() == true){
+                Toast.makeText(requireContext(), resources.getString(R.string.select_the_quantity), Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(requireContext(), resources.getString(R.string.order_placed), Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -73,7 +73,6 @@ class ItemsFragment : Fragment() {
                     adapter.notifyDataSetChanged()
                     val bundle = Bundle()
                     bundle.putString("item",mainActivity?.itemArray?.toString())
-                    findNavController().navigate(R.id.billsFragment,bundle)
                     dialog.dismiss()
                 }
             }
