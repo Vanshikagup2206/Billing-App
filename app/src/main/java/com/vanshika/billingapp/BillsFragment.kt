@@ -22,18 +22,19 @@ class BillsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    var binding : FragmentBillsBinding ?= null
-    var mainActivity : MainActivity ?= null
-    lateinit var arrayAdapter : ArrayAdapter<DataAdapterClass>
-    var array = arrayListOf<DataAdapterClass>()
-    var number = 1
+    private var binding : FragmentBillsBinding ?= null
+    private var mainActivity : MainActivity ?= null
+    private lateinit var arrayAdapter : ArrayAdapter<DataAdapterClass>
+    private var number = 0
+    private var item = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity = activity as MainActivity
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-            mainActivity = activity as MainActivity
+            item = it.getString("item")?:""
         }
     }
 
@@ -48,30 +49,25 @@ class BillsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_expandable_list_item_1,array)
+        arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_expandable_list_item_1,mainActivity?.itemArray?: arrayListOf())
         binding?.spinner?.adapter = arrayAdapter
-//        binding?.tvItems?.setText(mainActivity?.binding?.toString())
-//        binding?.tvQuantity?.setText(mainActivity?.binding?.lvItems?.toString())
-        fun numberIncrement(){
-            number++
-            binding?.tvQuantity?.setText(number.toString())
-        }
-        fun numberDecrement(){
-            number--
-            binding?.tvQuantity?.setText(number.toString())
-        }
+//        binding?.spinner?.setOnItemClickListener { adapterView, view, i, l ->
+//            binding?.tvItems?.setText(item)
+//        }
         binding?.btnPlus?.setOnClickListener {
-            if (binding?.tvQuantity?.text?.toString()?.trim()!! >= mainActivity?.binding?.lvItems?.toString().toString()){
+            if (binding?.tvQuantity?.text?.toString()?.trim()!! > (mainActivity?.itemArray?: arrayListOf()).toString()){
                 binding?.tvQuantity?.error = resources.getString(R.string.out_of_limit)
             }else{
-                numberIncrement()
+                number++
+                binding?.tvQuantity?.setText(number.toString())
             }
         }
         binding?.btnMinus?.setOnClickListener {
-            if (binding?.tvQuantity?.text?.toString()?.trim()!! <= "0"){
+            if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! <= 1){
                 binding?.tvQuantity?.error = resources.getString(R.string.out_of_limit)
             }else{
-                numberDecrement()
+                number--
+                binding?.tvQuantity?.setText(number.toString())
             }
         }
     }

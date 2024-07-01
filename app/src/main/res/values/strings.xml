@@ -18,5 +18,7 @@
     <string name="select_item">Select Item</string>
     <string name="no">No</string>
     <string name="out_of_limit">Out of limit</string>
+    <string name="delete">Delete</string>
+    <string name="yes">Yes</string>
     <string-array name="itemsString"></string-array>
 </resources>

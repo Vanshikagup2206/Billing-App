@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.vanshika.billingapp.databinding.CustomDialogBinding
-import com.vanshika.billingapp.databinding.CustomDialogForUpdateBinding
 import com.vanshika.billingapp.databinding.FragmentItemsBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -27,15 +27,14 @@ class ItemsFragment : Fragment() {
     private var param2: String? = null
     var binding: FragmentItemsBinding? = null
     var mainActivity: MainActivity? = null
-    var itemArray = arrayListOf<DataAdapterClass>()
-    var adapter = BaseAdapterClass(itemArray)
+    lateinit var adapter: BaseAdapterClass
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity = activity as MainActivity
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-            mainActivity = activity as MainActivity
         }
     }
 
@@ -50,7 +49,9 @@ class ItemsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainActivity?.binding?.lvItems?.adapter = adapter
+        adapter = BaseAdapterClass(mainActivity?.itemArray?: arrayListOf())
+
+        binding?.listView?.adapter = adapter
         binding?.fabItems?.setOnClickListener {
             val dialogBinding = CustomDialogBinding.inflate(layoutInflater)
             val dialog = Dialog(requireContext()).apply {
@@ -64,7 +65,34 @@ class ItemsFragment : Fragment() {
                 } else if (dialogBinding.etQuantity.text.toString().trim().isEmpty()) {
                     dialogBinding.etQuantity.error = resources.getString(R.string.enter_quantity)
                 } else {
-                    itemArray.add(DataAdapterClass(
+                    mainActivity?.itemArray?.add(DataAdapterClass(
+                            dialogBinding.etEnterName.text.toString(),
+                            dialogBinding.etQuantity.text.toString().toInt()
+                        )
+                    )
+                    adapter.notifyDataSetChanged()
+                    val bundle = Bundle()
+                    bundle.putString("item",mainActivity?.itemArray?.toString())
+                    findNavController().navigate(R.id.billsFragment,bundle)
+                    dialog.dismiss()
+                }
+            }
+        }
+        binding?.listView?.setOnItemClickListener { adapterView, view, i, l ->
+            val dialogBinding = CustomDialogBinding.inflate(layoutInflater)
+            val dialog = Dialog(requireContext()).apply {
+                setContentView(dialogBinding.root)
+                dialogBinding.btnAdd.setText(resources.getString(R.string.update))
+                getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                show()
+            }
+            dialogBinding.btnAdd.setOnClickListener {
+                if (dialogBinding.etEnterName.text.toString().trim().isEmpty()) {
+                    dialogBinding.etEnterName.error = resources.getString(R.string.enter_name)
+                } else if (dialogBinding.etQuantity.text.toString().trim().isEmpty()) {
+                    dialogBinding.etQuantity.error = resources.getString(R.string.enter_quantity)
+                } else {
+                    mainActivity?.itemArray?.set(i, DataAdapterClass(
                             dialogBinding.etEnterName.text.toString(),
                             dialogBinding.etQuantity.text.toString().toInt()
                         )
@@ -74,38 +102,16 @@ class ItemsFragment : Fragment() {
                 }
             }
         }
-        mainActivity?.binding?.lvItems?.setOnItemClickListener { adapterView, view, i, l ->
-            val dialogBinding = CustomDialogForUpdateBinding.inflate(layoutInflater)
-            val dialog = Dialog(requireContext()).apply {
-                setContentView(dialogBinding.root)
-                getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                show()
-            }
-            dialogBinding.btnUpdate.setOnClickListener {
-                if (dialogBinding.etEnterNameForUpdate.text.toString().trim().isEmpty()) {
-                    dialogBinding.etEnterNameForUpdate.error = resources.getString(R.string.enter_name)
-                } else if (dialogBinding.etQuantityForUpdate.text.toString().trim().isEmpty()) {
-                    dialogBinding.etQuantityForUpdate.error = resources.getString(R.string.enter_quantity)
-                } else {
-                    itemArray.set(i, DataAdapterClass(
-                            dialogBinding.etEnterNameForUpdate.text.toString(),
-                            dialogBinding.etQuantityForUpdate.text.toString().toInt()
-                        )
-                    )
-                    adapter.notifyDataSetChanged()
-                    dialog.dismiss()
-                }
-            }
-        }
-        mainActivity?.binding?.lvItems?.setOnItemLongClickListener { adapterView, view, i, l ->
+        binding?.listView?.setOnItemLongClickListener { adapterView, view, i, l ->
             var alertDialog = AlertDialog.Builder(requireContext())
             alertDialog.setTitle(resources.getString(R.string.are_you_sure_you_want_to_delete_this_list))
-            alertDialog.setPositiveButton(resources.getString(R.string.update)) { _, _ ->
-                itemArray.removeAt(i)
+            alertDialog.setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+                mainActivity?.itemArray?.removeAt(i)
                 adapter.notifyDataSetChanged()
             }
             alertDialog.setNegativeButton(resources.getString(R.string.no)){ _,_ ->
             }
+            alertDialog.show()
             return@setOnItemLongClickListener true
         }
     }

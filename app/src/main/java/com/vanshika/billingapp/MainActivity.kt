@@ -9,6 +9,8 @@ import com.vanshika.billingapp.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     var binding : ActivityMainBinding ?= null
     var navController : NavController ?= null
+    var itemArray = arrayListOf<DataAdapterClass>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
