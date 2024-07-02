@@ -9,4 +9,8 @@ data class DataAdapterClass(
     override fun toString(): String {
         return "$name"
     }
+
+    override fun hashCode(): Int {
+        return quality?:0
+    }
 }

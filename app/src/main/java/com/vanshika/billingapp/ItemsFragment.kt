@@ -73,6 +73,7 @@ class ItemsFragment : Fragment() {
                     adapter.notifyDataSetChanged()
                     val bundle = Bundle()
                     bundle.putString("item",mainActivity?.itemArray?.toString())
+                    bundle.putInt("quantity",mainActivity?.itemArray?.hashCode()?:0)
                     dialog.dismiss()
                 }
             }

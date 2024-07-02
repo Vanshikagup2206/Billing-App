@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.vanshika.billingapp.databinding.FragmentBillsBinding
@@ -30,6 +31,7 @@ class BillsFragment : Fragment() {
     private lateinit var arrayAdapter : ArrayAdapter<DataAdapterClass>
     private var number = 0
     private var item = ""
+    private var quantity = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,7 @@ class BillsFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
             item = it.getString("item")?:""
+            quantity = it.getInt("quantity")
         }
     }
 
@@ -54,8 +57,17 @@ class BillsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_expandable_list_item_1,mainActivity?.itemArray?: arrayListOf())
         binding?.spinner?.adapter = arrayAdapter
-        var selectedItem = binding?.spinner?.selectedItem?.toString()
-        binding?.tvItems?.setText(selectedItem)
+        binding?.spinner?.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener{
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        var selectedItem = binding?.spinner?.selectedItem as DataAdapterClass
+                        binding?.tvItems?.setText(selectedItem.name)
+                        binding?.tvQuantity?.setText(selectedItem.quality.toString())
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+                    }
+                }
         binding?.btnPlus?.setOnClickListener {
             if (binding?.tvQuantity?.text?.toString()?.trim()!! > (mainActivity?.itemArray?: arrayListOf()).toString()){
                 Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
