@@ -30,7 +30,6 @@ class BillsFragment : Fragment() {
     private var mainActivity : MainActivity ?= null
     private lateinit var arrayAdapter : ArrayAdapter<DataAdapterClass>
     private var item = ""
-    var number = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +69,7 @@ class BillsFragment : Fragment() {
             if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! >= selectedItem.quality.toString().toInt()){
                 Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
+                var number = binding?.tvQuantity?.text.toString().toInt()
                 number += 1
                 binding?.tvQuantity?.setText(number.toString())
             }
@@ -78,6 +78,7 @@ class BillsFragment : Fragment() {
             if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! <= 1){
                 Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
+                var number = binding?.tvQuantity?.text.toString().toInt()
                 number -= 1
                 binding?.tvQuantity?.setText(number.toString())
             }
