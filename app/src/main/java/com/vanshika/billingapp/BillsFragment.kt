@@ -29,9 +29,7 @@ class BillsFragment : Fragment() {
     private var binding : FragmentBillsBinding ?= null
     private var mainActivity : MainActivity ?= null
     private lateinit var arrayAdapter : ArrayAdapter<DataAdapterClass>
-    private var number = 0
     private var item = ""
-    private var quantity = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +38,6 @@ class BillsFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
             item = it.getString("item")?:""
-            quantity = it.getInt("quantity")
         }
     }
 
@@ -60,26 +57,29 @@ class BillsFragment : Fragment() {
         binding?.spinner?.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                        var selectedItem = binding?.spinner?.selectedItem as DataAdapterClass
-                        binding?.tvItems?.setText(selectedItem.name)
-                        binding?.tvQuantity?.setText(selectedItem.quality.toString())
+                        var selectedItems = binding?.spinner?.selectedItem as DataAdapterClass
+                        binding?.tvItems?.setText(selectedItems.name)
+                        binding?.tvQuantity?.setText(selectedItems.quality.toString())
                     }
-
                     override fun onNothingSelected(p0: AdapterView<*>?) {
                     }
                 }
         binding?.btnPlus?.setOnClickListener {
-            if (binding?.tvQuantity?.text?.toString()?.trim()!! > (mainActivity?.itemArray?: arrayListOf()).toString()){
+            var selectedItem = binding?.spinner?.selectedItem as DataAdapterClass
+            if (binding?.tvQuantity?.text?.toString()?.trim()!! >= selectedItem.quality.toString()){
                 Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
+                var number = selectedItem.quality.toString().toInt()
                 number++
                 binding?.tvQuantity?.setText(number.toString())
             }
         }
         binding?.btnMinus?.setOnClickListener {
+            var selectedItem = binding?.spinner?.selectedItem as DataAdapterClass
             if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! <= 1){
                 Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
+                var number = selectedItem.quality.toString().toInt()
                 number--
                 binding?.tvQuantity?.setText(number.toString())
             }
