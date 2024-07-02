@@ -54,7 +54,6 @@ class BillsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_expandable_list_item_1,mainActivity?.itemArray?: arrayListOf())
         binding?.spinner?.adapter = arrayAdapter
-        var selectedItem = binding?.spinner?.selectedItem as DataAdapterClass
         binding?.spinner?.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -66,6 +65,7 @@ class BillsFragment : Fragment() {
                     }
                 }
         binding?.btnPlus?.setOnClickListener {
+            var selectedItem = binding?.spinner?.selectedItem as DataAdapterClass
             if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! >= selectedItem.quality.toString().toInt()){
                 Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
