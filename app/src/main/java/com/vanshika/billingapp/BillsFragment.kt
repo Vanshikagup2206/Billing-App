@@ -60,22 +60,26 @@ class BillsFragment : Fragment() {
                         var selectedItems = binding?.spinner?.selectedItem as DataAdapterClass
                         binding?.tvItems?.setText(selectedItems.name)
                         binding?.tvQuantity?.setText(selectedItems.quality.toString())
+                        binding?.btnPlus?.setOnClickListener {
+                            if (binding?.tvQuantity?.text?.toString()?.trim()?.isEmpty()==true){
+                                Toast.makeText(requireContext(), resources.getString(R.string.select_an_item), Toast.LENGTH_SHORT).show()
+                            }else if ((binding?.tvQuantity?.text?.toString()?.trim()?.toInt() ?: 0) >= selectedItems.quality.toString().toInt()){
+                                Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
+                            }else{
+                                var number = binding?.tvQuantity?.text.toString().toInt()
+                                number += 1
+                                binding?.tvQuantity?.setText(number.toString())
+                            }
+                        }
                     }
                     override fun onNothingSelected(p0: AdapterView<*>?) {
                     }
                 }
-        binding?.btnPlus?.setOnClickListener {
-            var selectedItem = binding?.spinner?.selectedItem as DataAdapterClass
-            if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! >= selectedItem.quality.toString().toInt()){
-                Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
-            }else{
-                var number = binding?.tvQuantity?.text.toString().toInt()
-                number += 1
-                binding?.tvQuantity?.setText(number.toString())
-            }
-        }
+
         binding?.btnMinus?.setOnClickListener {
-            if (binding?.tvQuantity?.text?.toString()?.trim()?.toInt()!! <= 1){
+            if (binding?.tvQuantity?.text?.toString()?.isEmpty() == true){
+                Toast.makeText(requireContext(), resources.getString(R.string.select_an_item), Toast.LENGTH_SHORT).show()
+            }else if ((binding?.tvQuantity?.text?.toString()?.trim()?.toInt() ?: 0) <= 1){
                 Toast.makeText(requireContext(), resources.getString(R.string.out_of_limit), Toast.LENGTH_SHORT).show()
             }else{
                 var number = binding?.tvQuantity?.text.toString().toInt()
@@ -89,6 +93,8 @@ class BillsFragment : Fragment() {
             }else if (binding?.tvQuantity?.text?.toString()?.isEmpty() == true){
                 Toast.makeText(requireContext(), resources.getString(R.string.select_the_quantity), Toast.LENGTH_SHORT).show()
             }else{
+                //index, qty minus
+                mainActivity?.itemArray
                 Toast.makeText(requireContext(), resources.getString(R.string.order_placed), Toast.LENGTH_SHORT).show()
             }
         }
